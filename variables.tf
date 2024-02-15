@@ -432,5 +432,6 @@ variable "subnet_group_name" {
 
 variable "force_db_parameter_group_name" {
   type        = string
+  default     = ""
   description = "Enforce using a specific parameter group for cluster and instances"
 }
