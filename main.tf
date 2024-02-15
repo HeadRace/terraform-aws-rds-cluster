@@ -76,7 +76,7 @@ resource "aws_rds_cluster" "primary" {
   vpc_security_group_ids              = compact(flatten([join("", aws_security_group.default.*.id), var.vpc_security_group_ids]))
   preferred_maintenance_window        = var.maintenance_window
   db_subnet_group_name                = join("", aws_db_subnet_group.default.*.name)
-  db_cluster_parameter_group_name     = join("", aws_rds_cluster_parameter_group.default.*.name)
+  db_cluster_parameter_group_name     = var.force_db_parameter_group_name ? var.force_db_parameter_group_name : join("", aws_rds_cluster_parameter_group.default.*.name)
   iam_database_authentication_enabled = var.iam_database_authentication_enabled
   tags                                = module.this.tags
   engine                              = var.engine
@@ -158,7 +158,7 @@ resource "aws_rds_cluster" "secondary" {
   vpc_security_group_ids              = compact(flatten([join("", aws_security_group.default.*.id), var.vpc_security_group_ids]))
   preferred_maintenance_window        = var.maintenance_window
   db_subnet_group_name                = join("", aws_db_subnet_group.default.*.name)
-  db_cluster_parameter_group_name     = join("", aws_rds_cluster_parameter_group.default.*.name)
+  db_cluster_parameter_group_name     = var.force_db_parameter_group_name ? var.force_db_parameter_group_name : join("", aws_rds_cluster_parameter_group.default.*.name)
   iam_database_authentication_enabled = var.iam_database_authentication_enabled
   tags                                = module.this.tags
   engine                              = var.engine
@@ -220,7 +220,7 @@ resource "aws_rds_cluster_instance" "default" {
   cluster_identifier                    = coalesce(join("", aws_rds_cluster.primary.*.id), join("", aws_rds_cluster.secondary.*.id))
   instance_class                        = var.instance_type
   db_subnet_group_name                  = join("", aws_db_subnet_group.default.*.name)
-  db_parameter_group_name               = join("", aws_db_parameter_group.default.*.name)
+  db_parameter_group_name               = var.force_db_parameter_group_name ? var.force_db_parameter_group_name : join("", aws_db_parameter_group.default.*.name)
   publicly_accessible                   = var.publicly_accessible
   tags                                  = module.this.tags
   engine                                = var.engine
